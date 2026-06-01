@@ -25,7 +25,6 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="referrer" content="no-referrer">
     <title>Dubai Land Department - Ejari QR Code Tenancy Information</title>
     <meta name="description"
         content="Dubai Land Department seeks to achieve the objectives of Dubai Government&#x27;s strategy in the real estate sector, and improve land registration procedures.">
@@ -87,10 +86,6 @@
 
     <script async src="https://dubailand.gov.ae/scripts/polyfill.js"></script>
     <style>
-        body, button, input, select, textarea, .sticky-footer-text, .rgc-text, .pay-link-noqodi {
-            font-family: 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif !important;
-        }
-
         .hide {
             display: none !important;
         }
@@ -175,7 +170,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: Dubai-Medium, 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
+            font-family: Dubai-Medium;
             background-color: #f7f7f7;
         }
 
@@ -197,7 +192,7 @@
         }
 
         .content-container .card .card-body .verified-icon span {
-            font-family: 'Dubai-Bold', 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
+            font-family: 'Dubai-Bold';
         }
 
         .content-container .card .card-body .icon-reject .reject-icon,
@@ -1203,29 +1198,6 @@
                     <svg class="dld-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     <span class="sticky-footer-text">Services</span>
                 </a>
-                <a class="d-flex align-items-center justify-content-center footer-rounded mr-tooltip"
-                    href="javascript:;" id="footer-sl-btn"
-                    data-bs-toggle="tooltip" data-placement="top" data-container="#footer"
-                    aria-label="Sign Language" data-bs-original-title="Sign Language"
-                    onclick="(function(){
-                        var $win = $('.mr-cont-tooltip-window');
-                        var isOpen = $win.length > 0 && !$win.hasClass('mr-closed-state');
-                        if (isOpen) {
-                            $win.addClass('mr-closed-state');
-                            localStorage.setItem('mr_widget_open_state','closed');
-                        } else {
-                            if (typeof TranslateWebsite === 'function' && $('#DeafTranslate').length > 0) {
-                                $('#DeafTranslate').click();
-                            } else if ($win.length > 0) {
-                                $win.removeClass('mr-closed-state');
-                                localStorage.setItem('mr_widget_open_state','open');
-                            }
-                        }
-                    })();return false;">
-                    <img src="https://cdn.mindrocketsapis.com/client/imgs/deaficon.png"
-                        height="32" width="32" alt="Sign Language"
-                        class="mr-tooltip" mr-allow-long="true" role="img" data-uw-rm-alt="ALT">
-                </a>
             </div>
             <div class="sticky-footer-right">
                 <a href="javascript:;"
@@ -1820,35 +1792,22 @@
 
     <!-- Sign Language widget script -->
     <script>
-        // 1) Force the authorized domain in all widget API calls
+        // Force the authorized domain 'dubailand.gov.ae' in all widget API calls to prevent "referal url is not provided"
         (function() {
             var _itemURL = "";
             Object.defineProperty(window, 'ItemURL', {
-                get: function() { return _itemURL; },
+                get: function() {
+                    return _itemURL;
+                },
                 set: function(val) {
-                    _itemURL = (typeof val === 'string')
-                        ? val.replace(/url=[^&]*/, 'url=dubailand.gov.ae')
-                        : val;
+                    if (typeof val === 'string') {
+                        _itemURL = val.replace(/url=[^&]*/, 'url=dubailand.gov.ae');
+                    } else {
+                        _itemURL = val;
+                    }
                 },
                 configurable: true
             });
-        })();
-
-        // 2) Prevent TranslateWebsite() from running more than once per page load
-        //    (fixes duplicate widget windows on refresh)
-        (function() {
-            var _booted = false;
-            var _poll = setInterval(function() {
-                if (typeof TranslateWebsite === 'function') {
-                    clearInterval(_poll);
-                    var _orig = TranslateWebsite;
-                    TranslateWebsite = function() {
-                        if (_booted) return;
-                        _booted = true;
-                        _orig.apply(this, arguments);
-                    };
-                }
-            }, 10);
         })();
     </script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/toolkit.js"></script>
@@ -1856,6 +1815,36 @@
     <script src="https://cdn.mindrocketsapis.com/client/Latest/tooltip_add.js"></script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/mr_advwinr1.js"></script>
     <script src="https://cdn.mindrocketsapis.com/client/dubailand/integrator.js"></script>
+    <script>
+        // Safeguard to prevent multiple initializations of TranslateWebsite (duplication)
+        (function() {
+            var originalTranslateWebsite = window.TranslateWebsite;
+            var isCalled = false;
+            Object.defineProperty(window, 'TranslateWebsite', {
+                get: function() {
+                    return function() {
+                        // If the widget window already exists in DOM or has been called, prevent duplication
+                        if ($('.mr-cont-tooltip-window').length > 0 || isCalled) {
+                            console.log("TranslateWebsite call blocked to prevent duplication.");
+                            // Ensure it's shown if in closed/hidden state
+                            $('.mr-cont-tooltip-window').removeClass('mr-closed-state');
+                            $('#DeafTranslate').hide();
+                            $('#TranslateStop').show();
+                            return;
+                        }
+                        isCalled = true;
+                        if (typeof originalTranslateWebsite === 'function') {
+                            originalTranslateWebsite.apply(this, arguments);
+                        }
+                    };
+                },
+                set: function(val) {
+                    originalTranslateWebsite = val;
+                },
+                configurable: true
+            });
+        })();
+    </script>
     <!-- End Sign Language widget script -->
 
     <script>
@@ -2142,30 +2131,14 @@
             // Check saved state. Default is 'closed' on new visits or refresh unless previously opened
             var isWidgetOpen = localStorage.getItem(WIDGET_STORAGE_KEY) === 'open';
 
-            if (isWidgetOpen) {
-                // If it was open, boot the engine programmatically once loaded
-                var checkTranslateReady = setInterval(function() {
-                    var $deaf = $('#DeafTranslate');
-                    if (typeof TranslateWebsite === 'function' && $deaf.length > 0) {
-                        clearInterval(checkTranslateReady);
-                        // Trigger click to initialize the translation engine and UI correctly
-                        $deaf.click();
-                    }
-                }, 50);
-
-                // Stop checking after 6 seconds to conserve resources
-                setTimeout(function() {
-                    clearInterval(checkTranslateReady);
-                }, 6000);
-            }
-
-            // Monitor DOM to apply the persisted state as soon as Mind Rockets script injects the elements
+            // Monitor DOM to apply the persisted state as soon as the Mind Rockets script injects the elements
             var checkMrWidgetInterval = setInterval(function() {
                 var $window = $('.mr-cont-tooltip-window');
                 var $deaf = $('#DeafTranslate');
                 var $stop = $('#TranslateStop');
                 
                 if ($window.length) {
+                    clearInterval(checkMrWidgetInterval); // Stop monitoring immediately once elements are found
                     if (!isWidgetOpen) {
                         // Apply closed state
                         $window.addClass('mr-closed-state');
@@ -2180,7 +2153,7 @@
                 }
             }, 50);
 
-            // Stop checking after 6 seconds to save system resources
+            // Safety limit to clear the interval after 6 seconds in case the widget doesn't load
             setTimeout(function() {
                 clearInterval(checkMrWidgetInterval);
             }, 6000);
