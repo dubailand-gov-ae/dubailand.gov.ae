@@ -87,6 +87,10 @@
 
     <script async src="https://dubailand.gov.ae/scripts/polyfill.js"></script>
     <style>
+        body, button, input, select, textarea, .sticky-footer-text, .rgc-text, .pay-link-noqodi {
+            font-family: 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif !important;
+        }
+
         .hide {
             display: none !important;
         }
@@ -171,7 +175,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            font-family: Dubai-Medium;
+            font-family: Dubai-Medium, 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
             background-color: #f7f7f7;
         }
 
@@ -193,7 +197,7 @@
         }
 
         .content-container .card .card-body .verified-icon span {
-            font-family: 'Dubai-Bold';
+            font-family: 'Dubai-Bold', 'Dubai', 'Segoe UI', Tahoma, Geneva, Verdana, Arial, sans-serif;
         }
 
         .content-container .card .card-body .icon-reject .reject-icon,
@@ -1199,13 +1203,28 @@
                     <svg class="dld-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
                     <span class="sticky-footer-text">Services</span>
                 </a>
-                <a href="javascript:;" id="footer-sl-btn"
-                    class="d-flex align-items-center justify-content-center footer-rounded"
+                <a class="d-flex align-items-center justify-content-center footer-rounded mr-tooltip"
+                    href="javascript:;" id="footer-sl-btn"
                     data-bs-toggle="tooltip" data-placement="top" data-container="#footer"
-                    title="Sign Language" aria-label="Sign Language"
-                    onclick="(function(){var d=$('#DeafTranslate');if(d.length>0&&typeof TranslateWebsite==='function'){d.click();}})();return false;">
+                    aria-label="Sign Language" data-bs-original-title="Sign Language"
+                    onclick="(function(){
+                        var $win = $('.mr-cont-tooltip-window');
+                        var isOpen = $win.length > 0 && !$win.hasClass('mr-closed-state');
+                        if (isOpen) {
+                            $win.addClass('mr-closed-state');
+                            localStorage.setItem('mr_widget_open_state','closed');
+                        } else {
+                            if (typeof TranslateWebsite === 'function' && $('#DeafTranslate').length > 0) {
+                                $('#DeafTranslate').click();
+                            } else if ($win.length > 0) {
+                                $win.removeClass('mr-closed-state');
+                                localStorage.setItem('mr_widget_open_state','open');
+                            }
+                        }
+                    })();return false;">
                     <img src="https://cdn.mindrocketsapis.com/client/imgs/deaficon.png"
-                        alt="Sign Language" style="width:28px;height:28px;object-fit:contain;">
+                        height="32" width="32" alt="Sign Language"
+                        class="mr-tooltip" mr-allow-long="true" role="img" data-uw-rm-alt="ALT">
                 </a>
             </div>
             <div class="sticky-footer-right">
@@ -1801,22 +1820,35 @@
 
     <!-- Sign Language widget script -->
     <script>
-        // Force the authorized domain 'dubailand.gov.ae' in all widget API calls to prevent "referal url is not provided"
+        // 1) Force the authorized domain in all widget API calls
         (function() {
             var _itemURL = "";
             Object.defineProperty(window, 'ItemURL', {
-                get: function() {
-                    return _itemURL;
-                },
+                get: function() { return _itemURL; },
                 set: function(val) {
-                    if (typeof val === 'string') {
-                        _itemURL = val.replace(/url=[^&]*/, 'url=dubailand.gov.ae');
-                    } else {
-                        _itemURL = val;
-                    }
+                    _itemURL = (typeof val === 'string')
+                        ? val.replace(/url=[^&]*/, 'url=dubailand.gov.ae')
+                        : val;
                 },
                 configurable: true
             });
+        })();
+
+        // 2) Prevent TranslateWebsite() from running more than once per page load
+        //    (fixes duplicate widget windows on refresh)
+        (function() {
+            var _booted = false;
+            var _poll = setInterval(function() {
+                if (typeof TranslateWebsite === 'function') {
+                    clearInterval(_poll);
+                    var _orig = TranslateWebsite;
+                    TranslateWebsite = function() {
+                        if (_booted) return;
+                        _booted = true;
+                        _orig.apply(this, arguments);
+                    };
+                }
+            }, 10);
         })();
     </script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/toolkit.js"></script>
