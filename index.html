@@ -83,6 +83,7 @@
     <link rel="stylesheet" href="https://dubailand.gov.ae/css/icomoon/icomoon.css" />
     <link type="text/css" media="screen" rel="stylesheet"
         href="https://dubailand.gov.ae/scripts/plugins/fancybox/jquery.fancybox.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
 
     <script async src="https://dubailand.gov.ae/scripts/polyfill.js"></script>
     <style>
@@ -1420,25 +1421,6 @@
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script>
         $(document).ready(function () {
-            // Fallback for development/testing environments (like localhost or github.io)
-            // Since 04.gov.ae and services.dubailand.gov.ae have strict CSP frame-ancestors headers
-            // that restrict iframe embedding only to the official dubailand.gov.ae domain,
-            // we convert these links to open in a new tab when not on the production domain.
-            if (!window.location.hostname.includes("dubailand.gov.ae")) {
-                $("[data-04-fancybox], [data-happiness-fancybox]").each(function() {
-                    var $el = $(this);
-                    var url = $el.attr("data-src") || $el.attr("href");
-                    if (url && url !== "javascript:;") {
-                        $el.removeAttr("data-04-fancybox");
-                        $el.removeAttr("data-happiness-fancybox");
-                        $el.removeClass("fancybox");
-                        $el.removeClass("iframe");
-                        $el.attr("target", "_blank");
-                        $el.attr("href", url);
-                    }
-                });
-            }
-
             Fancybox.bind("[data-04-fancybox]", {
                 toolbar: false,
                 closeButton: true,
@@ -1528,6 +1510,7 @@
     <!--Speech to text scripts-->
     <script src="https://dubailand.gov.ae/scripts/UI/plugins/jquery.inputmask.bundle.min.js"></script>
     <script src="https://dubailand.gov.ae/scripts/plugins/fancybox/jquery.fancybox.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
     <!--Start of Zopim Live Chat Script-->
     <script>
         //AOS.init(
