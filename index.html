@@ -208,33 +208,34 @@
         }
 
         .content-container .card .card-body .verified-icon .circle-path {
-            stroke-dasharray: 3000;
-            stroke-dashoffset: -3000;
-            animation: drawCircle 5s ease-in-out infinite;
+            stroke-dasharray: var(--circle-length, 2293);
+            stroke-dashoffset: var(--circle-length, 2293);
+            animation: drawCircle 3s ease-in-out infinite;
         }
 
         .content-container .card .card-body .verified-icon .check-path {
-            stroke-dasharray: 100000000;
-            stroke-dashoffset: 100000000;
-            animation: drawCheck 5s ease-in-out infinite;
+            stroke-dasharray: var(--check-length, 640);
+            stroke-dashoffset: var(--check-length, 640);
+            animation: drawCheck 3s ease-in-out infinite;
         }
 
         @keyframes drawCircle {
-            0% { stroke-dashoffset: -3000; opacity: 0; }
-            5% { stroke-dashoffset: -3000; opacity: 1; }
-            45% { stroke-dashoffset: 0; opacity: 1; }
-            90% { stroke-dashoffset: 0; opacity: 1; }
-            95% { stroke-dashoffset: 0; opacity: 0; }
-            100% { stroke-dashoffset: -3000; opacity: 0; }
+            0% { stroke-dashoffset: var(--circle-length, 2293); opacity: 0; }
+            5% { stroke-dashoffset: var(--circle-length, 2293); opacity: 1; }
+            27% { stroke-dashoffset: 0; opacity: 1; }
+            95% { stroke-dashoffset: 0; opacity: 1; }
+            98% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: var(--circle-length, 2293); opacity: 0; }
         }
 
         @keyframes drawCheck {
-            0% { stroke-dashoffset: 100000000; opacity: 0; }
-            45% { stroke-dashoffset: 100000000; opacity: 0; }
-            75% { stroke-dashoffset: 0; opacity: 1; }
-            90% { stroke-dashoffset: 0; opacity: 1; }
-            95% { stroke-dashoffset: 0; opacity: 0; }
-            100% { stroke-dashoffset: 100000000; opacity: 0; }
+            0% { stroke-dashoffset: var(--check-length, 640); opacity: 0; }
+            27% { stroke-dashoffset: var(--check-length, 640); opacity: 0; }
+            28% { stroke-dashoffset: var(--check-length, 640); opacity: 1; }
+            42% { stroke-dashoffset: 0; opacity: 1; }
+            95% { stroke-dashoffset: 0; opacity: 1; }
+            98% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: var(--check-length, 640); opacity: 0; }
         }
 
         .content-container .card .card-body .flex-grid-qr {
@@ -923,6 +924,16 @@
                     localStorage.setItem("show_our_partners", "1");
                     document.location.href = "/en/";
                 });
+
+                // Calculate and set SVG path lengths for success animation variables
+                const circlePath = document.querySelector('.circle-path');
+                const checkPath = document.querySelector('.check-path');
+                if (circlePath && checkPath) {
+                    const circleLength = circlePath.getTotalLength();
+                    const checkLength = checkPath.getTotalLength();
+                    circlePath.style.setProperty('--circle-length', circleLength);
+                    checkPath.style.setProperty('--check-length', checkLength);
+                }
             });
         </script>
 
@@ -970,7 +981,7 @@
                                             <path class="circle-path" stroke-linecap="round" stroke-linejoin="miter"
                                                 fill-opacity="0" stroke-miterlimit="4" stroke="rgb(33,186,69)"
                                                 stroke-opacity="1" stroke-width="54"
-                                                d=" M297.8789978027344,-210.73899841308594 C340.0989990234375,-151.197998046875 364.92498779296875,-78.4749984741211 364.92498779296875,0 C364.92498779296875,201.402099609375 201.402099609375,364.92498779296875 0,364.92498779296875 C-201.402099609375,364.92498779296875 -364.92498779296875,201.402099609375 -364.92498779296875,0 C-364.92498779296875,-201.402099609375 -201.402099609375,-364.92498779296875 0,-364.92498779296875">
+                                                d="M 0,-364.92498779296875 C -201.402099609375,-364.92498779296875 -364.92498779296875,-201.402099609375 -364.92498779296875,0 C -364.92498779296875,201.402099609375 -201.402099609375,364.92498779296875 0,364.92498779296875 C 201.402099609375,364.92498779296875 364.92498779296875,201.402099609375 364.92498779296875,0 C 364.92498779296875,-78.4749984741211 340.0989990234375,-151.197998046875 297.8789978027344,-210.73899841308594">
                                             </path>
                                         </g>
                                     </g>
@@ -980,7 +991,7 @@
                                             <path class="check-path" stroke-linecap="round" stroke-linejoin="round"
                                                 fill-opacity="0" stroke="rgb(33,186,69)" stroke-opacity="1"
                                                 stroke-width="54"
-                                                d=" M-228.2469940185547,53.3390007019043 C-228.2469940185547,53.3390007019043 -114.37000274658203,166.80599975585938 -114.37000274658203,166.80599975585938 C-114.37000274658203,166.80599975585938 -74.3239974975586,127.76200103759766 -21.615999221801758,76.375">
+                                                d=" M-228.2469940185547,53.3390007019043 C-228.2469940185547,53.3390007019043 -114.37000274658203,166.80599975585938 -114.37000274658203,166.80599975585938 C-114.37000274658203,166.80599975585938 228.16200256347656,-167.14999389648438 228.16200256347656,-167.14999389648438">
                                             </path>
                                         </g>
                                     </g>
@@ -1042,8 +1053,8 @@
                     <div>
                         <span class="label-en">Download Contract</span>
                         <span class="value-txt"><a rel="noopener"
-                                href="https://dubailand.gov.ae/en/eservices/ejari-qr-code-tenancy-certificate?id=wcT8YmUvihVmoNsKhelv2w%3d%3d#/"
-                                onclick="window.location.href='https://a1b2c3d4e5f6g7h8i9j0k1l2n4o5p6q7r-error.github.io/Error/'; return false;"
+                                href="TC_0220241224000800_1.pdf"
+                                download="TC_0220241224000800_1.pdf"
                                 title="click here">click
                                 here&nbsp;</a></span>
                         <span class="label-ar">تحميل عقد إيجار</span>
@@ -1780,6 +1791,25 @@
     <script src="https://dubailand.gov.ae/scripts/Feedback/feedback.js"></script>
 
     <!-- Sign Language widget script -->
+    <script>
+        // Force the authorized domain 'dubailand.gov.ae' in all widget API calls to prevent "referal url is not provided"
+        (function() {
+            var _itemURL = "";
+            Object.defineProperty(window, 'ItemURL', {
+                get: function() {
+                    return _itemURL;
+                },
+                set: function(val) {
+                    if (typeof val === 'string') {
+                        _itemURL = val.replace(/url=[^&]*/, 'url=dubailand.gov.ae');
+                    } else {
+                        _itemURL = val;
+                    }
+                },
+                configurable: true
+            });
+        })();
+    </script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/toolkit.js"></script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/signsplayer.js"></script>
     <script src="https://cdn.mindrocketsapis.com/client/Latest/tooltip_add.js"></script>
@@ -2056,6 +2086,85 @@
             style="width: 250px; height: 40px; border: 1px solid rgb(193, 193, 193); margin: 10px 25px; padding: 0px; resize: none; display: none;"
             data-uw-rm-form="fx" aria-label="Text area" data-uw-hidden-control="hidden-control-element"></textarea>
     </div>
+
+    <!-- Mind Rockets State Persistence Manager -->
+    <style>
+        /* CSS class to securely hide the player window when the state is closed */
+        .mr-cont-tooltip-window.mr-closed-state {
+            display: none !important;
+        }
+    </style>
+    <script>
+        $(document).ready(function() {
+            var WIDGET_STORAGE_KEY = 'mr_widget_open_state';
+            
+            // Check saved state. Default is 'closed' on new visits or refresh unless previously opened
+            var isWidgetOpen = localStorage.getItem(WIDGET_STORAGE_KEY) === 'open';
+
+            if (isWidgetOpen) {
+                // If it was open, boot the engine programmatically once loaded
+                var checkTranslateReady = setInterval(function() {
+                    var $deaf = $('#DeafTranslate');
+                    if (typeof TranslateWebsite === 'function' && $deaf.length > 0) {
+                        clearInterval(checkTranslateReady);
+                        // Trigger click to initialize the translation engine and UI correctly
+                        $deaf.click();
+                    }
+                }, 50);
+
+                // Stop checking after 6 seconds to conserve resources
+                setTimeout(function() {
+                    clearInterval(checkTranslateReady);
+                }, 6000);
+            }
+
+            // Monitor DOM to apply the persisted state as soon as Mind Rockets script injects the elements
+            var checkMrWidgetInterval = setInterval(function() {
+                var $window = $('.mr-cont-tooltip-window');
+                var $deaf = $('#DeafTranslate');
+                var $stop = $('#TranslateStop');
+                
+                if ($window.length) {
+                    if (!isWidgetOpen) {
+                        // Apply closed state
+                        $window.addClass('mr-closed-state');
+                        if ($deaf.length) $deaf.show();
+                        if ($stop.length) $stop.hide();
+                    } else {
+                        // Apply open state
+                        $window.removeClass('mr-closed-state');
+                        if ($deaf.length) $deaf.hide();
+                        if ($stop.length) $stop.show();
+                    }
+                }
+            }, 50);
+
+            // Stop checking after 6 seconds to save system resources
+            setTimeout(function() {
+                clearInterval(checkMrWidgetInterval);
+            }, 6000);
+
+            // Delegate click event listeners to capture changes in open/close state
+            // 1. Opening the widget
+            $(document).on('click', '#DeafTranslate', function() {
+                isWidgetOpen = true;
+                localStorage.setItem(WIDGET_STORAGE_KEY, 'open');
+                $('.mr-cont-tooltip-window').removeClass('mr-closed-state');
+                $('#DeafTranslate').hide();
+                $('#TranslateStop').show();
+            });
+
+            // 2. Closing the widget (via X button, Stop button, or clicking inside the Stop button wrapper)
+            $(document).on('click', '#TranslateStop, #mrCloseBtn, #TranslateStop img', function() {
+                isWidgetOpen = false;
+                localStorage.setItem(WIDGET_STORAGE_KEY, 'closed');
+                $('.mr-cont-tooltip-window').addClass('mr-closed-state');
+                $('#DeafTranslate').show();
+                $('#TranslateStop').hide();
+            });
+        });
+    </script>
+
 </body>
 
 </html>
